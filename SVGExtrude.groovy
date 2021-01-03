@@ -1,4 +1,7 @@
 import eu.mihosoft.vrl.v3d.svg.*;
+
+import com.neuronrobotics.bowlerstudio.scripting.ScriptingEngine
+
 import eu.mihosoft.vrl.v3d.CSG
 import eu.mihosoft.vrl.v3d.Extrude;
 import eu.mihosoft.vrl.v3d.Polygon
@@ -17,11 +20,11 @@ HashMap<String,List<Polygon>> polygonsByLayer = s.toPolygons()
 // extrude all layers to a map to 10mm thick
 HashMap<String,ArrayList<CSG>> csgByLayers = s.extrudeLayers(10)
 // extrude just one layer to 10mm
-def holeParts = s.extrudeLayerToCSG(10,"holes")
+def holeParts = s.extrudeLayerToCSG(10,"1-holes")
 // seperate holes and outsides using layers to differentiate
-def outsideParts = s.extrudeLayerToCSG(10,"outsides")
+def outsideParts = s.extrudeLayerToCSG(10,"2-outsides")
 					.difference(holeParts)
 // layers can be extruded at different depths					
-def boarderParts = s.extrudeLayerToCSG(5,"boarder")
+def boarderParts = s.extrudeLayerToCSG(5,"3-boarder")
 
-return CSG.unionAll([boarderParts,outsideParts])
+return [CSG.unionAll([boarderParts,outsideParts]),s.extrudeLayerToCSG(2,"4-star")]
