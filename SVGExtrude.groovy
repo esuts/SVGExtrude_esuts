@@ -10,7 +10,7 @@ File f = ScriptingEngine
 	.fileFromGit(
 		"https://github.com/madhephaestus/SVGBowlerExtrude.git",//git repo URL
 		"master",//branch
-		"drawing.svg"// File from within the Git repo
+		"technocopia-pin.svg"// File from within the Git repo
 	)
 println "Extruding SVG "+f.getAbsolutePath()
 SVGLoad s = new SVGLoad(f.toURI())
@@ -18,13 +18,11 @@ println "Layers= "+s.getLayers()
 // A map of layers to polygons
 HashMap<String,List<Polygon>> polygonsByLayer = s.toPolygons()
 // extrude all layers to a map to 10mm thick
-HashMap<String,ArrayList<CSG>> csgByLayers = s.extrudeLayers(10)
+//HashMap<String,ArrayList<CSG>> csgByLayers = s.extrudeLayers(10)
 // extrude just one layer to 10mm
-def holeParts = s.extrudeLayerToCSG(10,"1-holes")
+def base = s.extrudeLayerToCSG(3,"base")
 // seperate holes and outsides using layers to differentiate
-def outsideParts = s.extrudeLayerToCSG(10,"2-outsides")
-					.difference(holeParts)
-// layers can be extruded at different depths					
-def boarderParts = s.extrudeLayerToCSG(5,"3-boarder")
+def cutout = s.extrudeLayerToCSG(10,"inner")
+					.difference(base)
 
 return [CSG.unionAll([boarderParts,outsideParts]),s.extrudeLayerToCSG(2,"4-star")]
